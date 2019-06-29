@@ -1,0 +1,684 @@
+/* -------------------------------------CRIANDO BANCO DE DADOS AGENCIA_TURISMO---------------------------------- */
+DROP DATABASE IF EXISTS AGENCIA_TURISMO;
+CREATE DATABASE IF NOT EXISTS AGENCIA_TURISMO;
+USE AGENCIA_TURISMO;
+
+/*-----------------------------------------CRIANDO TABELAS E GATILHOS - ESQUEMA BANCO DE DADOS ----------------------------------*/
+
+/*------------------------------------------ TABELA CLIENTE  ----------------------------------*/
+
+CREATE TABLE IF NOT EXISTS CLIENTE(
+    ID_CLIENTE VARCHAR(12) NOT NULL, -- CPF
+    NOME VARCHAR(50) NOT NULL,
+    SOBRENOME VARCHAR(50) NOT NULL,
+    DATA_NASCIMENTO DATE NOT NULL,
+    SEXO ENUM('FEMININO', 'MASCULINO') NOT NULL,
+    TELEFONE VARCHAR(50) NOT NULL,
+    ENDERECO VARCHAR(100) NOT NULL,
+    EMAIL VARCHAR(50) NOT NULL,
+    SENHA VARCHAR(50) NOT NULL,
+    PERMISSAO ENUM('ADMINISTRADOR', 'CLIENTE') NOT NULL,
+    CODIGO_ALTERACAO VARCHAR(255),
+    PRIMARY KEY (ID_CLIENTE)
+);
+
+/*------------------------------------------ TABELA CARTAO  ----------------------------------*/
+
+CREATE TABLE CARTAO(
+    ID_CARTAO VARCHAR(50) NOT NULL,
+    DATA_VALIDADE VARCHAR(7) NOT NULL,	-- VARCHAR ??
+    CODIGO_SEGURANCA CHAR(3) NOT NULL,
+    COD_CLIENTE VARCHAR(50) NOT NULL,
+    EMPRESA VARCHAR(50) NOT NULL,
+    NOME_TITULAR VARCHAR(50) NOT NULL,
+    TIPO_CARTAO ENUM('CREDITO', 'DEBITO'),
+	PRIMARY KEY(ID_CARTAO),
+    FOREIGN KEY (COD_CLIENTE)
+        REFERENCES CLIENTE (ID_CLIENTE)
+        ON UPDATE CASCADE
+);
+
+/*------------------------------------------ TABELA COMPANHIA  ----------------------------------*/
+
+
+CREATE TABLE IF NOT EXISTS COMPANHIA(
+    ID_COMPANHIA INT NOT NULL AUTO_INCREMENT,
+    NOME_COMPANHIA VARCHAR(50) NOT NULL,
+    EMAIL VARCHAR(50) NOT NULL,
+	PRIMARY KEY(ID_COMPANHIA)
+);
+
+/*------------------------------------------ TABELA TIPO_VIAGEM  ----------------------------------*/
+
+
+CREATE TABLE IF NOT EXISTS TIPO_VIAGEM(
+	ID_TIPO_VIAGEM INT NOT NULL AUTO_INCREMENT,
+    COD_COMPANHIA INT NOT NULL,
+    TIPO_VIAGEM ENUM('AVIAO','CRUZEIRO','ONIBUS','TREM') NOT NULL,
+	PRIMARY KEY(ID_TIPO_VIAGEM),
+    UNIQUE KEY(COD_COMPANHIA, TIPO_VIAGEM),
+    FOREIGN KEY(COD_COMPANHIA)
+		REFERENCES COMPANHIA(ID_COMPANHIA) 
+        ON UPDATE CASCADE
+);
+
+/*------------------------------------------ TABELA PAIS  ----------------------------------*/
+
+
+CREATE TABLE IF NOT EXISTS PAIS (
+    ID_PAIS INT NOT NULL AUTO_INCREMENT,
+    NOME VARCHAR(50) NOT NULL,
+	PRIMARY KEY(ID_PAIS)
+);
+
+/*------------------------------------------ TABELA CIDADE  ----------------------------------*/
+
+
+CREATE TABLE IF NOT EXISTS CIDADE (
+    ID_CIDADE INT NOT NULL AUTO_INCREMENT,
+    NOME VARCHAR(50) NOT NULL,
+    COD_PAIS INT NOT NULL,
+	PRIMARY KEY(ID_CIDADE),
+    FOREIGN KEY (COD_PAIS)
+        REFERENCES PAIS (ID_PAIS)
+        ON UPDATE CASCADE
+);
+
+/*------------------------------------------ TABELA COMPANHIA_ORIGEM_DESTINO  ----------------------------------*/
+
+CREATE TABLE IF NOT EXISTS COMPANHIA_ORIGEM_DESTINO(
+	ID_COMPANHIA_ORIGEM_DESTINO INT NOT NULL AUTO_INCREMENT,
+    COD_COMPANHIA INT NOT NULL,
+    COD_ORIGEM INT NOT NULL,
+    COD_DESTINO INT NOT NULL,
+    VALOR_PASSAGEM FLOAT NOT NULL,
+    PRIMARY KEY(ID_COMPANHIA_ORIGEM_DESTINO),
+    UNIQUE KEY(COD_COMPANHIA,COD_ORIGEM,COD_DESTINO),
+    FOREIGN KEY (COD_COMPANHIA)
+        REFERENCES COMPANHIA (ID_COMPANHIA)
+        ON UPDATE CASCADE,
+    FOREIGN KEY (COD_ORIGEM)
+        REFERENCES CIDADE (ID_CIDADE)
+        ON UPDATE CASCADE,
+    FOREIGN KEY (COD_DESTINO)
+        REFERENCES CIDADE (ID_CIDADE)
+        ON UPDATE CASCADE
+);
+
+/*------------------------------------------ TABELA HOTEL  ----------------------------------*/
+
+CREATE TABLE IF NOT EXISTS HOTEL(
+    ID_HOTEL INT NOT NULL AUTO_INCREMENT,
+    NOME VARCHAR(50) NOT NULL,
+    TELEFONE VARCHAR(50) NOT NULL,
+    EMAIL VARCHAR(50) NOT NULL,
+    TIPO_QUARTO VARCHAR(50) NOT NULL,
+    QNT_QUARTO INT NOT NULL,
+    PRECO_DIARIA FLOAT NOT NULL,
+    COD_CIDADE INT NOT NULL,    
+    PRIMARY KEY(ID_HOTEL),
+    FOREIGN KEY (COD_CIDADE)
+        REFERENCES CIDADE (ID_CIDADE)
+        ON UPDATE CASCADE
+);
+
+/*------------------------------------------ TABELA FACILIDADES  ----------------------------------*/
+
+
+CREATE TABLE IF NOT EXISTS FACILIDADE(
+    ID_FACILIDADE INT NOT NULL AUTO_INCREMENT,
+    NOME_FACILIDADE VARCHAR(50) NOT NULL,
+    DESCRICAO VARCHAR(100) NOT NULL,
+    PRIMARY KEY(ID_FACILIDADE)
+);
+
+/*------------------------------------------ TABELA HOTEL_FACILIDADES  ----------------------------------*/
+
+
+CREATE TABLE IF NOT EXISTS HOTEL_FACILIDADE(
+	ID_HOTEL_FACILIDADE INT NOT NULL AUTO_INCREMENT,
+    COD_HOTEL INT NOT NULL,
+    COD_FACILIDADE INT NOT NULL,
+    PRIMARY KEY (ID_HOTEL_FACILIDADE),
+    UNIQUE KEY(COD_HOTEL, COD_FACILIDADE),
+    FOREIGN KEY (COD_HOTEL)
+        REFERENCES HOTEL (ID_HOTEL)
+        ON UPDATE CASCADE,
+    FOREIGN KEY (COD_FACILIDADE)
+        REFERENCES FACILIDADE(ID_FACILIDADE)
+        ON UPDATE CASCADE
+);
+
+/*------------------------------------------ TABELA GUIA_TURISMO  ----------------------------------*/
+
+
+CREATE TABLE IF NOT EXISTS GUIA_TURISMO(
+    ID_GUIA_TURISMO VARCHAR(12) NOT NULL,
+    NOME VARCHAR(100) NOT NULL,
+    TELEFONE VARCHAR(50) NOT NULL,
+    EMAIL VARCHAR(50) NOT NULL,
+    PRECO FLOAT NOT NULL,
+	PRIMARY KEY(ID_GUIA_TURISMO)
+);
+
+/*------------------------------------------ TABELA TRECHO_GUIA  ----------------------------------*/
+
+CREATE TABLE IF NOT EXISTS TRECHO_GUIA(
+	ID_TRECHO_GUIA INT NOT NULL AUTO_INCREMENT,
+    COD_GUIA VARCHAR(12) NOT NULL,
+    COD_COMPANHIA_ORIGEM_DESTINO INT NOT NULL,
+    PRIMARY KEY(ID_TRECHO_GUIA),
+    UNIQUE KEY(COD_GUIA, COD_COMPANHIA_ORIGEM_DESTINO),
+    FOREIGN KEY (COD_COMPANHIA_ORIGEM_DESTINO)
+        REFERENCES COMPANHIA_ORIGEM_DESTINO(ID_COMPANHIA_ORIGEM_DESTINO)
+        ON UPDATE CASCADE
+);
+/*------------------------------------------ TABELA RESERVAS  ----------------------------------*/
+
+CREATE TABLE IF NOT EXISTS RESERVA(
+    ID_RESERVA INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    COD_CLIENTE VARCHAR(50) NOT NULL,
+    COD_COMPANHIA_ORIGEM_DESTINO INT NOT NULL,
+    CHECK_IN DATE NOT NULL,
+    CHECK_OUT DATE NOT NULL,
+    QNT_VIAJANTES INT(11) NOT NULL,
+    COD_GUIA VARCHAR(50),    
+    COD_HOTEL INT NOT NULL,
+    QNT_QUARTO INT NOT NULL,
+    DATA_COMPRA DATE NOT NULL,
+    STATUS_PAGAMENTO VARCHAR(50) NOT NULL,
+    STATUS_RESERVA VARCHAR(50) NOT NULL,
+    VALOR_TOTAL FLOAT NOT NULL,
+    FOREIGN KEY (COD_CLIENTE)
+        REFERENCES CLIENTE (ID_CLIENTE)
+        ON UPDATE CASCADE,
+    FOREIGN KEY (COD_HOTEL)
+        REFERENCES HOTEL (ID_HOTEL)
+        ON UPDATE CASCADE,
+    FOREIGN KEY (COD_COMPANHIA_ORIGEM_DESTINO)
+        REFERENCES COMPANHIA_ORIGEM_DESTINO(ID_COMPANHIA_ORIGEM_DESTINO)
+        ON UPDATE CASCADE,
+    FOREIGN KEY (COD_GUIA)
+        REFERENCES GUIA_TURISMO(ID_GUIA)
+        ON UPDATE CASCADE
+);
+
+
+/*------------------------------------------ TABELA PAGAMENTO ??  ----------------------------------*/
+CREATE TABLE IF NOT EXISTS PAGAMENTO(
+	ID_PAGAMENTO INT NOT NULL AUTO_INCREMENT,
+	COD_RESERVA INT NOT NULL,
+    COD_CARTAO VARCHAR(50) NOT NULL,
+    PRIMARY KEY(ID_PAGAMENTO),
+    UNIQUE KEY(COD_RESERVA, COD_CARTAO),
+    FOREIGN KEY(COD_RESERVA)
+		REFERENCES RESERVA(ID_RESERVA)
+        ON UPDATE CASCADE,
+	FOREIGN KEY(COD_CARTAO)
+		REFERENCES CARTAO(ID_CARTAO)
+        ON UPDATE CASCADE	
+);
+/*------------------------------------------ CRIANDO TRIGGERS  ----------------------------------*/
+
+-- DROP TRIGGER ATUALIZAR_QUARTOS;
+CREATE TRIGGER ATUALIZAR_QUARTOS1		-- Remove a quantidade de quartos que está sendo utilizados
+AFTER INSERT ON RESERVA
+	FOR EACH ROW 
+    UPDATE HOTEL SET QNT_QUARTO = QNT_QUARTO - NEW.QNT_QUARTO WHERE ID_HOTEL = NEW.COD_HOTEL;
+    
+-- DROP TRIGGER ATUALIZAR_QUARTOS;
+DELIMITER //
+CREATE TRIGGER ATUALIZAR_QUARTOS2		-- Adiciona a quantidade de quartos que não está sendo utilizados
+AFTER INSERT ON PAGAMENTO
+	FOR EACH ROW 
+    BEGIN
+    SET @QUANTIDADE = (SELECT QNT_QUARTO FROM RESERVA WHERE ID_RESERVA = NEW.COD_RESERVA);
+    SET @HOTEL = (SELECT COD_HOTEL FROM RESERVA WHERE ID_RESERVA = NEW.COD_RESERVA);
+UPDATE HOTEL 
+SET 
+    QNT_QUARTO = QNT_QUARTO + @QUANTIDADE
+WHERE
+    ID_HOTEL = @HOTEL;
+END; //
+DELIMITER ;
+-- ------------------------------------------------- INSERINDO DADOS NA BASE DE DADOS  ----------------------------------*/
+
+-- --
+-- SENHA: 1234
+INSERT INTO CLIENTE(ID_CLIENTE, NOME, SOBRENOME, DATA_NASCIMENTO, SEXO, TELEFONE, ENDERECO, EMAIL, SENHA, PERMISSAO) VALUES
+('00000000000', 'Administrador', '', '2019-06-07', '2', '0000000000000', '', 'admin@email.com', '700c8b805a3e2a265b01c77614cd8b21', 1),
+('05412465854', 'João Augusto', 'da Silva', '1990-10-29', '2', '(16)3322-5183', 'Rua Nove de Julho, 126 - Centro, Araraquara-SP', 'joao_silva@gmail.com', '700c8b805a3e2a265b01c77614cd8b21', 2),
+('09876543210', 'Maria Laura', 'Freitas', '1998-07-25', '1', '(16)99834-7719', 'Avenida José Nogueira Neves, 128 - Melhado, Araraquara-SP', 'maria_lau@email.com.br', '700c8b805a3e2a265b01c77614cd8b21', 2),
+('42870973216', 'Gabrieli Luisa', 'Moreira', '2001-02-02', '1', '(16)99734-5580', 'Avenida Artur Lopes de Castro, 06 -Jardim Guaianazes, Araraquara-SP', 'gabrieli.moreira@outlook.com.br', '700c8b805a3e2a265b01c77614cd8b21', 1);
+SELECT * FROM CLIENTE;
+
+
+-- A DATA DE VALIDADE GERALMENTE E SOMENTE MES E ANO
+INSERT INTO CARTAO (ID_CARTAO, DATA_VALIDADE, CODIGO_SEGURANCA, COD_CLIENTE, EMPRESA, NOME_TITULAR, TIPO_CARTAO) VALUES
+('5407899682781151', '20-12', '888', '05412465854', 'MasterCard', 'João A. da Silva', 'Crédito'),
+('4897269523181393', '20-08', '191', '05412465854', 'Visa', 'João A. da Silva', 'Débito'),
+('4024007124277707', '19-11', '217', '42870973216', 'Visa', 'Gabrieli Luisa Moreira', 'Débito');
+
+
+INSERT INTO COMPANHIA(ID_COMPANHIA, NOME_COMPANHIA, EMAIL) VALUES
+(1, 'GOL', 'gol@email.com'),
+(2, 'Avianca', 'avianca@email.com'),
+(3, 'Air France', 'air_france@email.com'),
+(4, 'Qatar Airways', 'qatar_airways@email.com'),
+(5, 'LATAM', 'latam@email.com'),
+(6, 'Malaysia Airlines', 'malaysia_airlines@email.com'),
+(7, 'Azul', 'azul_viagens@email.com'),
+(8, 'TAM', 'tam@email.com'), -- Ver em Estevam pelo Mundo
+(9, 'Singapore Airlines', 'singapore_airlines@email.com'),
+(10, 'Emirantes', 'emirantes@email.com'),								 -- Avião
+(11, 'MSC', 'msc_cruzeiros@email.com'),
+(12, 'Costa Cruzeiros', 'costa_cruzeiros@email.com'),
+(13, 'Royal Caribbean International', 'royal_caribbean@email.com'),
+(14, 'Disney Cruise Line', 'disney_cruise@email.com'),
+(15, 'Norwegian Cruise Line', 'norwegian_cruise@email.com'), 			 -- Cruzeiros
+(16, 'Cometa', 'viacao_cometa@email.com'),
+(17, 'Pluma', 'viacao_pluma@email.com'),
+(18, 'Eurolines', 'eurolines@email.com'),
+(19, 'National Express', 'national_express@email.com'),
+(20, 'Paraty', 'paraty@email.com'),							-- Onibus
+(21, 'Eurostar', 'eurostar@email.com'),
+(22, 'TGV', 'tgv@email.com'),
+(23, 'Blue Train', 'blue_train@email.com'),
+(24, 'Rocky Mountaineer', 'rocky_mountaineer@email.com');				-- Trem
+SELECT * FROM COMPANHIA;
+
+
+INSERT INTO TIPO_VIAGEM(ID_TIPO_VIAGEM, COD_COMPANHIA, TIPO_VIAGEM) VALUES
+(1, 1, '1'),
+(2, 2, '1'),
+(3, 3, '1'),
+(4, 4, '1'),
+(5, 5, '1'),
+(6, 6, '1'),
+(7, 7, '1'),
+(8, 8, '1'),
+(9, 9, '1'),
+(10, 10, '1'),-- Avião
+(11, 11, '2'),
+(12, 12, '2'),
+(13, 13, '2'),
+(14, 14, '2'),
+(15, 15, '2'),-- Cruzeiros
+(16, 16, '3'),
+(17, 17, '3'),
+(18, 18, '3'),
+(19, 19, '3'),
+(20, 20, '3'),-- Onibus
+(21, 21, '4'),
+(22, 22, '4'),
+(23, 23, '4'),
+(24, 24, '4');
+SELECT * FROM TIPO_VIAGEM;
+
+
+INSERT INTO PAIS(ID_PAIS, NOME) VALUES
+(1, 'África do Sul'),
+(2, 'Alemanha'),
+(3, 'Argentina'),
+(4, 'Austrália'),
+(5, 'Bélgica'),
+(6, 'Brasil'),
+(7, 'Canadá'),
+(8, 'Chile'),
+(9, 'China'),
+(10, 'Colômbia'),
+(11, 'Coreia do Sul'),
+(12, 'Dinamarca'),
+(13, 'Egito'),
+(14, 'Espanha'),
+(15, 'Estados Unidos'),
+(16, 'França'),
+(17, 'Grécia'),
+(18, 'Índia'),
+(19, 'Indonésia'),
+(20, 'Itália'),
+(21, 'Japão'),
+(22, 'Luxemburgo'),
+(23, 'Maldivas'),
+(24, 'Marrocos'),
+(25, 'México'),
+(26, 'Noruega'),
+(27, 'Nova Zelândia'),
+(28, 'Paraguai'),
+(29, 'Portugal'),
+(30, 'Reino Unido'),
+(31, 'Rússia'),
+(32, 'Suécia'),
+(33, 'Suíça'),
+(34, 'Uruguai');
+SELECT * FROM PAIS;
+
+
+INSERT INTO CIDADE(ID_CIDADE, NOME, COD_PAIS) VALUES
+(1, 'Cidade do Cabo', 1),
+(2, 'Johanesburgo', 1),
+(3, 'Durban', 1),  				-- África do Sul
+(4, 'Berlim', 2),
+(5, 'Munique', 2),
+(6, 'Frankfurt am Main', 2),	-- Alemanha
+(7, 'Buenos Aires', 3),
+(8, 'Córdoba', 3),
+(9, 'Mendoza', 3),				-- Argentina
+(10, 'Sydney', 4),
+(11, 'Melbourne', 4),		-- Austrália
+(12, 'Bruxelas', 5),
+(13, 'Antuérpia', 5),		-- Bélgica
+(14, 'Salvador', 6),
+(15, 'Brasília', 6),
+(16, 'Rio de Janeiro', 6),
+(17, 'São Paulo', 6),
+(18, 'Recife', 6),
+(19, 'Ribeirão Preto', 6),
+(20, 'Florianópolis', 1),		-- Brasil
+(21, 'Toronto', 7),
+(22, 'Vancouver', 7),
+(23, 'Montreal', 7),			-- Canadá
+(24, 'Santiago', 8),			-- Chile
+(25, 'Pequim', 9),
+(26, 'Xangai', 9),
+(27, 'Hong Kong', 9),			-- China
+(28, 'Bogotá', 10),
+(29, 'Medellín', 10),
+(30, 'San Andrés', 10),			-- Colômbia
+(31, 'Seul', 11);				-- Coreia do Sul
+SELECT * FROM CIDADE;
+
+
+INSERT INTO COMPANHIA_ORIGEM_DESTINO(COD_COMPANHIA, COD_ORIGEM, COD_DESTINO, VALOR_PASSAGEM) VALUES
+(5, 17, 1, 2790),
+(10, 17, 1, 4279),
+(3, 17, 1, 6631),	--
+(10, 17, 2, 4061),
+(1, 17, 2, 4191),
+(5, 17, 2, 4224),
+(3, 17, 2, 6323),	--
+(10, 17, 3, 4636),
+(7, 17, 3, 4636),
+(1, 17, 3, 4636),
+(5, 17, 3, 4637),
+(3, 17, 3, 13046),	--
+(7, 17, 4, 1858),
+(5, 17, 4, 2907),
+(3, 17, 4, 4668),	--
+(2, 17, 5, 1198), 
+(7, 17, 5, 2237),	--
+(7, 17, 6, 2601),
+(5, 17, 6, 2651),
+(10, 17, 6, 4279),	--
+(7, 17, 7, 484),
+(4, 17, 7, 882),
+(10, 17, 7, 1734),
+(1, 17, 7, 2753),
+(2, 17, 7, 4038),	--
+(7, 17, 8, 734),
+(4, 17, 8, 1265),
+(5, 17, 8, 1265),
+(1, 17, 8, 2240),	--
+(1, 17, 9, 2425),
+(7, 17, 9, 727),
+(4, 17, 9, 1265),	-- 
+(5, 17, 10, 2965),
+(4, 17, 10, 6356),
+(10, 17, 10, 5915),	--
+(1, 6, 10, 6540), -- VARIADOS
+(3, 19, 17, 13500),
+(6, 20, 10, 6323),
+(3, 17, 8, 12650),
+(15, 17, 2, 6323),
+(18, 17, 20, 6323),
+(20, 28, 19, 6323),
+(16, 19, 14, 6323),
+(22, 16, 22, 6323);
+SELECT * FROM COMPANHIA_ORIGEM_DESTINO;
+
+
+-- A QUANTIDADE DE QUARTOS DISPONIVEIS SERA ALTERADA QUANDO HOUVER UMA RESERVA?
+INSERT INTO HOTEL(ID_HOTEL, NOME, TELEFONE, EMAIL, TIPO_QUARTO, QNT_QUARTO, PRECO_DIARIA, COD_CIDADE) VALUES
+(1, 'The Shard', '66582730', 'the_shardm@email.com', 'Superior Shard', 10, 2500, 2),
+(2, 'The Shard', '33227845', 'the_shardsp@email.com', 'Superior Shard', 5, 3000, 1),
+(3, 'Morada do Sol', '33229865', 'moradadosol@email.com', 'Duplo', 4, 500, 1),
+(4, 'Comfort Hotel', '34327865', 'comfort_hotel@email.com', 'Superior Double Room', 7, 750, 3),
+(5, 'Morada do Sol', '998876547', 'morada_sol@email.com', 'Suíte', 9, 600, 5);
+SELECT * FROM HOTEL;
+
+INSERT INTO FACILIDADE(ID_FACILIDADE, NOME_FACILIDADE, DESCRICAO) VALUES
+(1, 'Pagamento', 'Pagamento reembolsável'),
+(2, 'Reserva', 'Cancelamento de reservas gratuito'),
+(3, 'Academia', 'Acesso livre à academia'),
+(4, 'Wi-Fi', 'Acesso gratuito e ilimitado à rede Wi-Fi nas dependências do hotel'),
+(5, 'Estacionamento', 'Estacionamento gratuito');
+
+
+INSERT INTO HOTEL_FACILIDADE(COD_HOTEL, COD_FACILIDADE) VALUES
+(1, 1),
+(2, 3),
+(3, 4),
+(4, 5);
+
+
+-- PREÇO FICA EM GUIA_TURISMO OU TRECHO_GUIA??
+INSERT INTO GUIA_TURISMO(ID_GUIA_TURISMO, NOME, TELEFONE, EMAIL, PRECO) VALUES
+('57489475843', 'Luiz de Arruda Campos', '33778945', 'luiz_guiat@email.com', 3500),
+('87230487502', 'Maria dos Anjos Machado', '44372895', 'mariaanjos.turismo@email.com', 2900);
+SELECT * FROM GUIA_TURISMO;
+
+SELECT * FROM COMPANHIA_ORIGEM_DESTINO;
+-- COMO REFERENCIAR ??
+INSERT INTO TRECHO_GUIA(COD_GUIA, COD_COMPANHIA_ORIGEM_DESTINO) VALUES
+('57489475843', 1),
+('87230487502', 4);
+SELECT * FROM TRECHO_GUIA;
+SELECT * FROM COMPANHIA_ORIGEM_DESTINO;
+
+
+-- SE A RESERVA ESTA ASSOCIADA A UM TRECHO, POR QUE TAMBEM ESTA ASSOCIADA A COMPANHIA? O TRECHO JA NAO ESTA ASSOCIADO A COMPANHIA?
+INSERT INTO RESERVA(ID_RESERVA, COD_CLIENTE, COD_HOTEL, QNT_QUARTO, COD_COMPANHIA_ORIGEM_DESTINO, COD_GUIA, CHECK_IN, CHECK_OUT, QNT_VIAJANTES, DATA_COMPRA, STATUS_PAGAMENTO, STATUS_RESERVA, VALOR_TOTAL) VALUES
+(1, '05412465854', 1, 2, 1, '57489475843', '2019-05-25', '2019-07-30', 3, '2010-05-03', 'Aguardando confirmação', 'Aguardando pagamento', 21000),
+(2, '05412465854', 1, 1, 2, '57489475843', '2019-04-25', '2019-05-03', 1, '2019-01-05', 'Pago', 'Processando informação', 21500),
+(3, '42870973216', 1, 1, 3, '87230487502', '2019-04-25', '2019-05-03', 2, '2018-12-25', 'Pago', 'Concluída', 24400),
+(4, '42870973216', 4, 1, 1, '57489475843', '2019-04-17', '2019-04-27', 1, '2018-03-30', 'Aguardando confirmação', 'Aguardando pagamento', 30000),
+(6, '42870973216', 2, 3, 2, '87230487502', '2019-05-17', '2019-05-29', 5, '2017-05-31', 'Pago', 'Gerando confirmação', 32000),
+(5, '42870973216', 3, 1, 5, '57489475843', '2019-04-25', '2019-05-10', 1, '2019-02-02', 'Aguardando confirmação', 'Aguardando pagamento', 15000),
+(7, '05412465854', 1, 1, 4, '57489475843', '2019-04-25', '2017-05-10', 1, '2019-03-02', 'Aguardando confirmação', 'Aguardando pagamento', 19000),
+(8, '42870973216', 3, 1, 5, '87230487502', '2019-05-25', '2019-07-30', 3, '2010-09-03', 'Aguardando confirmação', 'Aguardando pagamento', 15000),
+(9, '05412465854', 1, 2, 1, '57489475843', '2019-05-25', '2019-07-30', 3, '2018-09-03', 'Aguardando confirmação', 'Aguardando pagamento', 18500),
+(10, '42870973216', 1, 2, 1, '87230487502', '2019-05-25', '2019-07-30', 3, '2017-05-03', 'Aguardando confirmação', 'Aguardando pagamento', 22500);
+SELECT * FROM RESERVA;
+SELECT * FROM GUIA_TURISMO;
+
+--
+INSERT INTO PAGAMENTO(COD_RESERVA, COD_CARTAO) VALUES
+(4, '5407899682781151');
+
+
+CREATE OR REPLACE VIEW INFO_HOTEL_FACILIDADES AS
+	SELECT
+		ID_HOTEL_FACILIDADE,
+        HOTEL.NOME AS HOTEL,
+        FACILIDADE.NOME_FACILIDADE AS FACILIDADE,
+        FACILIDADE.DESCRICAO AS DESCRICAO
+    FROM
+		HOTEL
+			INNER JOIN
+		HOTEL_FACILIDADE
+	ON
+		HOTEL.ID_HOTEL = HOTEL_FACILIDADE.COD_HOTEL
+			INNER JOIN
+		FACILIDADE
+	ON
+        HOTEL_FACILIDADE.COD_FACILIDADE = FACILIDADE.ID_FACILIDADE
+	ORDER BY
+		HOTEL.NOME, FACILIDADE.NOME_FACILIDADE;
+
+
+CREATE OR REPLACE VIEW INFO_RESERVA AS
+	SELECT 
+		ID_RESERVA, 
+		COD_CLIENTE, 
+        RESERVA.COD_COMPANHIA_ORIGEM_DESTINO,
+		CLIENTE.NOME 'CLIENTE',
+		C.NOME_COMPANHIA, 
+		CO.NOME 'CIDADE_ORIGEM', 
+		CD.NOME 'CIDADE_DESTINO',
+		RESERVA.CHECK_IN 'CHECK_IN', 
+		RESERVA.CHECK_OUT 'CHECK_OUT',
+		RESERVA.QNT_VIAJANTES,
+        COD_GUIA,        
+		GUIA_TURISMO.NOME 'GUIA TURÍSTICO',
+        RESERVA.COD_HOTEL,
+        HOTEL.NOME 'HOTEL',
+        RESERVA.QNT_QUARTO,
+		RESERVA.DATA_COMPRA 'DATA_DA_COMPRA', 
+		RESERVA.STATUS_PAGAMENTO 'STATUS_DO_PAGAMENTO', 
+		RESERVA.STATUS_RESERVA 'STATUS_DA_RESERVA', 
+		RESERVA.VALOR_TOTAL 'VALOR_TOTAL'
+	FROM
+		CLIENTE INNER JOIN RESERVA 
+	ON	CLIENTE.ID_CLIENTE = RESERVA.COD_CLIENTE
+			INNER JOIN HOTEL 
+	ON 	RESERVA.COD_HOTEL = HOTEL.ID_HOTEL
+			INNER JOIN COMPANHIA_ORIGEM_DESTINO COD
+	ON 	COD.ID_COMPANHIA_ORIGEM_DESTINO = RESERVA.COD_COMPANHIA_ORIGEM_DESTINO
+			INNER JOIN COMPANHIA C
+	ON 	COD.COD_COMPANHIA = C.ID_COMPANHIA
+			INNER JOIN CIDADE CO 
+	ON  COD.COD_ORIGEM = CO.ID_CIDADE
+			INNER JOIN CIDADE CD 
+	ON 	COD.COD_DESTINO = CD.ID_CIDADE
+			INNER JOIN GUIA_TURISMO
+	ON
+		RESERVA.COD_GUIA = GUIA_TURISMO.ID_GUIA_TURISMO;  
+
+SELECT * FROM INFO_RESERVA;
+        
+
+CREATE OR REPLACE VIEW INFO_COMPANHIA_ORIGEM_DESTINO AS
+	SELECT
+		COD.ID_COMPANHIA_ORIGEM_DESTINO,
+		C.NOME_COMPANHIA AS COMPANHIA,
+        C1.NOME AS ORIGEM,
+        C2.NOME AS DESTINO,
+        COD.VALOR_PASSAGEM
+	FROM
+		COMPANHIA C
+			INNER JOIN
+		COMPANHIA_ORIGEM_DESTINO COD
+	ON
+		C.ID_COMPANHIA = COD.COD_COMPANHIA
+			INNER JOIN
+		CIDADE C1
+	ON
+		COD.COD_ORIGEM = C1.ID_CIDADE
+			INNER JOIN
+		CIDADE C2
+	ON
+		C2.ID_CIDADE = COD.COD_DESTINO;   
+        
+CREATE OR REPLACE VIEW INFO_PAGAMENTO AS
+	SELECT
+		P.ID_PAGAMENTO,
+        P.COD_RESERVA,
+		C.NOME AS CLIENTE,
+        CARD.ID_CARTAO
+	FROM
+		CLIENTE C
+			INNER JOIN
+		RESERVA R
+	ON
+		C.ID_CLIENTE = R.COD_CLIENTE
+			INNER JOIN
+		PAGAMENTO P
+	ON
+		R.ID_RESERVA = P.COD_RESERVA
+			INNER JOIN
+		CARTAO CARD
+	ON
+		P.COD_CARTAO = CARD.ID_CARTAO;
+
+
+CREATE OR REPLACE VIEW INFO_TRECHO_GUIA AS
+	SELECT DISTINCT
+		TG.ID_TRECHO_GUIA,
+		GT.NOME AS GUIA,
+        CONCAT(C1.NOME, '/', C2.NOME) AS 'ORIGEM_DESTINO'
+	FROM
+		GUIA_TURISMO GT
+			INNER JOIN
+		TRECHO_GUIA TG
+	ON
+		GT.ID_GUIA_TURISMO = COD_GUIA
+			INNER JOIN
+		COMPANHIA_ORIGEM_DESTINO COD
+	ON
+		TG.COD_COMPANHIA_ORIGEM_DESTINO = COD.ID_COMPANHIA_ORIGEM_DESTINO
+			INNER JOIN
+		CIDADE C1
+	ON 
+		COD.COD_ORIGEM = C1.ID_CIDADE
+			INNER JOIN
+		CIDADE C2
+	ON 
+		COD.COD_DESTINO = C2.ID_CIDADE; 
+	-- 
+    SELECT * FROM INFO_TRECHO_GUIA;
+
+
+CREATE OR REPLACE VIEW PERFIL AS    
+	SELECT 
+		ID_CLIENTE,
+		NOME,
+		SOBRENOME,
+		DATA_NASCIMENTO,
+		SEXO,
+		TELEFONE, 
+		ENDERECO,
+        EMAIL,
+        PERMISSAO
+	FROM
+		CLIENTE;
+SELECT * FROM PERFIL;
+    
+
+CREATE OR REPLACE VIEW CONTA AS
+	SELECT 
+		ID_CLIENTE,
+		EMAIL,
+		PERMISSAO
+	FROM
+		CLIENTE;
+	SELECT * FROM CONTA;
+    
+    
+    
+    
+    
+    
+    
+-- PODEMOS FAZER ALGUNS GATILHOS PARA ATUALIZAR O CANCELAMENTo
+
+SELECT * FROM CARTAO;
+SELECT * FROM CIDADE;
+SELECT * FROM CLIENTE;
+SELECT * FROM COMPANHIA;
+SELECT * FROM COMPANHIA_ORIGEM_DESTINO;
+SELECT * FROM FACILIDADE;
+SELECT * FROM GUIA_TURISMO;
+SELECT * FROM HOTEL;
+SELECT * FROM HOTEL_FACILIDADE;
+SELECT * FROM PAGAMENTO;
+SELECT * FROM PAIS;
+SELECT * FROM RESERVA;
+SELECT * FROM TIPO_VIAGEM;
+SELECT * FROM TRECHO_GUIA;
+SELECT * FROM INFO_HOTEL_FACILIDADES;
+SELECT * FROM INFO_RESERVA; 
+SELECT * FROM INFO_COMPANHIA_ORIGEM_DESTINO;
+SELECT * FROM INFO_PAGAMENTO;
+SELECT * FROM INFO_TRECHO_GUIA;
+SELECT * FROM PERFIL;
+SELECT * FROM CONTA;

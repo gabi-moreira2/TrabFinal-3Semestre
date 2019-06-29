@@ -1,0 +1,65 @@
+html, body {
+	height:100%;
+}
+
+.logotipo{
+	padding: 10px;
+	margin-right: 20px;
+}
+
+.logotipo img{
+	height: 30px;
+}
+
+input{
+	margin: 10px;
+}
+
+button{
+	margin: 10px;
+}
+
+select{
+	margin: 10px;
+}
+
+textarea{
+	padding: 10px;
+	margin: 10px;
+	width: 200px;
+	height: 100px;
+}
+#link1 img:houver{
+    background-image:url(img/destino2.jpg);    
+}
+
+.conteudo {
+    min-height:100%;
+    position:relative;
+    width:800px;
+}
+
+.footer {
+    position:absolute;
+    bottom:0;
+    width:100%;
+}
+
+.bg_video{
+	right: 0; 
+	bottom: 0;
+	min-width: 90%;
+	min-height: 100%;
+	width: auto; 
+	height: auto; 
+	z-index: -1000; 
+	background-size: cover; 
+}
+
+.rodape{
+	width: 100%;
+	float: left;
+	padding: 3% 4%;
+	text-align: center;
+	background: #FFFAFA;
+}

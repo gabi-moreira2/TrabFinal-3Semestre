@@ -1,0 +1,187 @@
+(11, 'Coreia do Sul'),
+(12, 'Dinamarca'),
+(13, 'Egito'),
+(14, 'Espanha'),
+(15, 'Estados Unidos'),
+(16, 'França'),
+(17, 'Grécia'),
+(18, 'Índia'),
+(19, 'Indonésia'),
+(20, 'Itália'),
+(21, 'Japão'),
+(22, 'Luxemburgo'),
+(23, 'Maldivas'),
+(24, 'Marrocos'),
+(25, 'México'),
+(26, 'Noruega'),
+(27, 'Nova Zelândia'),
+(28, 'Paraguai'),
+(29, 'Portugal'),
+(30, 'Reino Unido'),
+(31, 'Rússia'),
+(32, 'Suécia'),
+(33, 'Suíça'),
+(34, 'Uruguai');
+
+
+passagens para CIDADE DO CABO saindo de SP
+latam - 2790
+emirantes 4279
+air france 6.631
+
+passagens para JOHANESBURGO saindo de SP
+emirantes 4.061
+gol 4.191
+latam 4.224
+air france 6.323
+
+passagens para DURBAN saindo de SP
+emirantes 4.636
+azul 4.636
+gol 4.636
+latam 4.637
+air france 13.046
+
+passagens para BERLIM saindo de SP
+Azul 1.858
+latam 2.907
+air france 4.668
+
+passagens para MUNIQUE saindo de SP
+avianca 1.198
+azul 2.237
+
+passagens para Frankfurt am Main saindo de SP
+azul 2.601
+latam 2.651
+emirantes 4.279
+
+passagens para BUENOS AIRES saindo de SP
+AZUL 484
+qatar 882
+emirantes 1.734
+gol 2.753
+avianca 4.038
+
+passagens para CÓRDOBA saindo de SP
+azul 734
+qatar 1.265
+latam 1.265
+gol 2.240
+
+passagens para MENDOZA saindo de SP
+gol 2.425
+azul 727
+qatar 1.265
+
+passagens para SYDNEY saindo de SP
+latam 2.965
+qatar 6.356
+emirantes 5.915
+
+passagens para MELBOURNE saindo de SP
+emirantes 5.885
+qatar 7.728
+latam 3.162
+
+
+passagens para BRUXELAS saindo de SP
+azul 2.419
+latam 2.693
+
+
+passagens para Antuérpia saindo de SP
+air france 9.283
+
+passagens para SALVADOR saindo de SP
+gol 271
+azul 301
+
+passagens para BRASILIA saindo de SP
+azul 140
+gol 140
+
+passagens para Rio de Janeiro saindo de SP
+gol 161
+azul 180
+
+passagens para RECIFE saindo de SP
+gol 401
+azul 410
+
+ passagens para RIBEIRÃO PRETO saindo de SP
+azul 188
+
+passagens para FLORIANOPOLIS saindo de SP
+azul 214
+gol 240
+
+passagens para TORONTO saindo de SP
+latam 2.369
+avianca 2.466
+
+passagens para VANCOUVER saindo de SP
+latam 2.782
+avianca 5.132
+
+passagens para MONTREAL saindo de SP
+latam 2.618
+avianca 4.615
+
+passagens para SANTIAGO saindo de SP
+azul 1.898
+emirantes 1.898
+avianca 2.091
+latam 3.105
+qatar 2.237
+gol 2.978
+
+passagens para PEQUIM saindo de SP
+emirantes 4.605
+qatar 5.164
+
+passagens para XANGAI saindo de SP
+qatar 4.070
+emirantes 4.329
+
+passagens para HONG KONG saindo de SP
+emirantes 4.605
+latam 5.376
+
+passagens para BOGOTÁ saindo de SP
+avianca 2.830
+latam 3.058
+gol 9.461
+
+passagens para MEDELIN saindo de SP
+avianca 2.152
+
+passagens para SAN ANDRES saindo de SP
+avianca 2.420
+latam 3.047
+
+passagens para Seul saindo de SP
+qatar 3.412
+emirantes 5.014
+latam 5.049
+gol 6.478
+air france 7.755
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

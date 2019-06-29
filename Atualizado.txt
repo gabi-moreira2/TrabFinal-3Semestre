@@ -1,0 +1,52 @@
+FAZER AINDA :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+- altera dados_conta e perfil	--
+- form_reserva certinho 
+-  aparencia das tabelas, do form_login e terminar index.php	--
+- Colocar paginação	
+- Contatos
+- TODAS AS INFO DEVEM TER UM ID NA PRIMEIRA COLUNA
+- Colocar cod_reserva no listar_pagamento
+
+---------------------------------- DÚVIDAS --------------------------------------
+CLIENTE					- N ADICIONA
+CARTAO					- ADICIONA COM ERRO E NEM ALTERA O RADIO(tipo_cartao)
+RESERVA					- n adiciona e nem altera 
+						(ajax para preecher campos)
+					- Select com COD ou separados?? 
+PAGAMENTO 				- N ALTERA(Não pega os selects corretamente)
+
+*Paginação SELECT COUNT(*), Add reserva -> Ir para pagamento, classe Modal dando problema.
+form_resetar_senha.php (como fazer botão submit)
+
+------------------------------------------ **** --------------------------------------
+COMPANHIA 				- OK
+HOTEL_FACILIDADE			- OK
+COMPANHIA_ORIGEM_DESTINO		- OK
+TRECHO_GUIA				- OK
+PAIS					- OK
+CIDADE					- OK
+CLIENTE					- N ADICIONA
+CARTAO					- ADICIONA COM ERRO E NEM ALTERA O RADIO(tipo_cartao)
+TIPO_VIAGEM				- OK
+RESERVA					- n adiciona e nem altera (ajax para preecher campos)
+PAGAMENTO 				- N ALTERA(Não pega os selects corretamente)
+HOTEL					- OK 
+FACILIDADE 				- OK
+GUIA_TURISMO				- OK
+
+*** listar_trecho_guia tem um --> (descobrir da onde vem)
+
+ID_RESERVA";
+"COD_CLIENTE";
+ "COD_ORIGEM";
+COD_DESTINO";
+"COD_COMPANHIA";
+"CHECK_IN"; "CHECK_OUT";"QNT_VIAJANTES"; COD_GUIA, "COD_HOTEL";
+"QNT_QUARTO";"DATA_COMPRA";"STATUS_PAGAMENTO";
+  "STATUS_RESERVA";"VALOR_TOTAL";
+
+
+
+
+
+

@@ -1,0 +1,18 @@
+table{
+	border: 1px solid;
+	font-family:verdana;
+	
+}
+
+table thead {	
+    background-color: #AAAFFF;
+}
+
+/* linhas pares (even) */
+table tbody tr:nth-child(odd) {	
+    background-color: #CCC;
+}
+/* linhas ímpares (odd) */
+table tbody tr:nth-child(even) {
+    background-color: #FFF;
+}
